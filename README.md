@@ -16,7 +16,7 @@ It fetches filtered events and passes them to a custom handler defined by you.
 
 ## 🚀 How It Works
 
-`eth-indexer` queries the blockchain using the RPC provider and contract ABIs you supply. It:
+`argus-indexer` queries the blockchain using the RPC provider and contract ABIs you supply. It:
 
 1. Fetches and parses events using [`ethers.js`](https://docs.ethers.org/).
 2. Delivers both raw and parsed events to your custom handler.
@@ -40,7 +40,7 @@ In this case, provide the NFT contract first so its data is available before pro
 Extend the `IndexerContract` abstract class and define how events should be handled:
 
 ```ts
-import { IndexerContract } from "eth-indexer";
+import { IndexerContract } from "argus-indexer";
 
 class MarketContract extends IndexerContract {
   protected contractAddress = "0x..."; // Contract address
@@ -54,7 +54,7 @@ class MarketContract extends IndexerContract {
 
   public async handleEvent(
     parsedEvent: ethers.LogDescription | null,
-    event: ethers.EventLog | ethers.Log
+    event: ethers.EventLog | ethers.Log,
   ): Promise<void> {
     // Your custom event handler logic. E.g: Save the event details
     console.log(`Fetched ${parsedEvent.name}: ${parsedEvent?.args?.order_id}`);
@@ -67,7 +67,7 @@ class MarketContract extends IndexerContract {
 Call the `initiate()` function with your contract classes and config:
 
 ```ts
-import { initiate } from "eth-indexer";
+import { initiate } from "argus-indexer";
 
 initiate([NFTContract, MarketContract], {
   rpcUrl: "https://your-rpc-url",
@@ -103,8 +103,8 @@ initiate([NFTContract, MarketContract], {
 To avoid re-processing events, you can provide a custom event storage strategy by implementing the `TransactionRepositoryInterface`. Example using Prisma:
 
 ```ts
-import { ethers } from "eth-indexer";
-import type { TransactionRepositoryInterface } from "eth-indexer";
+import { ethers } from "argus-indexer";
+import type { TransactionRepositoryInterface } from "argus-indexer";
 import { PrismaClient } from "@prisma/client";
 
 class TransactionRepository implements TransactionRepositoryInterface {
@@ -116,7 +116,7 @@ class TransactionRepository implements TransactionRepositoryInterface {
 
   public async submit(
     event: ethers.EventLog | ethers.Log,
-    name: string | null
+    name: string | null,
   ) {
     await this.prisma.transaction.create({
       data: {
@@ -134,7 +134,7 @@ class TransactionRepository implements TransactionRepositoryInterface {
 
   public async existed(
     event: ethers.EventLog | ethers.Log,
-    name: string | null
+    name: string | null,
   ) {
     const existedTx = await this.prisma.transaction.findFirst({
       where: {
@@ -168,7 +168,7 @@ Each class that extends `IndexerContract` has access to:
 | `this.contractInstance`  | An `ethers.Contract` instance of your contract                          |
 | `this.contractInterface` | An `ethers.Interface` for advanced parsing                              |
 
-You can also use any part of `ethers.js` by importing directly from `eth-indexer`.
+You can also use any part of `ethers.js` by importing directly from `argus-indexer`.
 
 ---
 

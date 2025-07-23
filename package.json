@@ -1,6 +1,6 @@
 {
-  "name": "eth-indexer",
-  "version": "1.0.0",
+  "name": "argus-indexer",
+  "version": "1.0.2",
   "keywords": [
     "ethereum",
     "polygon",

@@ -1,10 +1,7 @@
 import BlockIterator from "./BlockIterator";
 import ConfigFacade from "./ConfigFacade";
 import type IndexerContract from "./IndexerContract";
-import type {
-  ContractConstructor,
-  IndexerConfig,
-} from "./interfaces";
+import type { ContractConstructor, IndexerConfig } from "./interfaces";
 
 export const sleep = async (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));

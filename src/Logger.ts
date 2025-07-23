@@ -1,10 +1,11 @@
 import winston from "winston";
 import { format } from "logform";
 import ConfigFacade from "./ConfigFacade";
+import { WinstonLogger } from "./interfaces";
 
 class Logger {
   private constructor() {}
-  public static getInstance(): winston.Logger {
+  public static getInstance(): WinstonLogger {
     return winston.createLogger({
       level: "verbose",
       format: format.combine(

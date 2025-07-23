@@ -1,9 +1,11 @@
 import { ethers } from "ethers";
 import JsonRPCProvider from "./JsonRPCProvider";
-import winston from "winston";
 import Logger from "./Logger";
 import { sleep } from "./utils";
-import { TransactionRepositoryInterface } from "./interfaces";
+import type {
+  TransactionRepositoryInterface,
+  WinstonLogger,
+} from "./interfaces";
 import FileTransactionRepository from "./FileTransactionRepository";
 import ConfigFacade from "./ConfigFacade";
 
@@ -12,7 +14,7 @@ abstract class IndexerContract {
   protected contractAbi!: ethers.InterfaceAbi;
   protected initialBlockNumber: number = 0;
   protected name!: string;
-  protected logger!: winston.Logger;
+  protected logger!: WinstonLogger;
 
   protected rpcProvider!: ethers.JsonRpcProvider;
   protected contractInstance!: ethers.Contract;

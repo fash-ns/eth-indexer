@@ -2,14 +2,14 @@ import JsonRPCProvider from "./JsonRPCProvider";
 import { JsonRpcProvider as EthersJsonRpcProvider } from "ethers";
 import * as fs from "fs";
 import IndexerContract from "./IndexerContract";
-import winston from "winston";
 import Logger from "./Logger";
 import ConfigFacade from "./ConfigFacade";
+import { WinstonLogger } from "./interfaces";
 
 class BlockIterator {
   private readonly instances: Set<IndexerContract>;
   private readonly rpcProvider: EthersJsonRpcProvider;
-  private readonly logger: winston.Logger;
+  private readonly logger: WinstonLogger;
   private readonly lastBlock?: number;
 
   constructor(instances: Set<IndexerContract>, lastBlock?: number) {
@@ -49,7 +49,10 @@ class BlockIterator {
     this.logger.info(`Last block in blockchain is ${lastBlock}`);
 
     while (fromBlock <= lastBlock) {
-      let toBlock = Math.min(lastBlock, fromBlock + ConfigFacade.getConfig()?.batchSize!);
+      let toBlock = Math.min(
+        lastBlock,
+        fromBlock + ConfigFacade.getConfig()?.batchSize!,
+      );
 
       for (const instance of this.instances) {
         this.logger.info(`Fetching events for ${instance.getName()}`);
@@ -62,7 +65,7 @@ class BlockIterator {
     if (this.lastBlock) {
       this.logger.info(`Indexer reached manual-set last block number`);
     } else {
-      const refetchInterval = ConfigFacade.getConfig()?.refetchInterval!
+      const refetchInterval = ConfigFacade.getConfig()?.refetchInterval!;
       this.logger.info(
         `Indexer is now sync with real-time blockchain data. Waiting ${refetchInterval / 1000} seconds to refetch events`,
       );
