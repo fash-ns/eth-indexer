@@ -1,17 +1,13 @@
 import { JsonRpcProvider } from "ethers";
+import ConfigFacade from "./ConfigFacade";
 
 class JsonRPCProvider {
   public static provider: JsonRpcProvider;
 
   public static getInstance() {
-    if (!process.env.RPC_PROVIDER_URL) {
-      throw new Error(
-        "RPC_PROVIDER_URL is not set in the environment variables.",
-      );
-    }
     if (!JsonRPCProvider.provider)
       JsonRPCProvider.provider = new JsonRpcProvider(
-        process.env.RPC_PROVIDER_URL,
+        ConfigFacade.getConfig()?.rpcUrl,
       );
     return JsonRPCProvider.provider;
   }

@@ -5,8 +5,9 @@ import Logger from "./Logger";
 import { sleep } from "./utils";
 import { TransactionRepositoryInterface } from "./interfaces";
 import FileTransactionRepository from "./FileTransactionRepository";
+import ConfigFacade from "./ConfigFacade";
 
-abstract class Contract {
+abstract class IndexerContract {
   protected contractAddress!: string;
   protected contractAbi!: ethers.InterfaceAbi;
   protected initialBlockNumber: number = 0;
@@ -18,7 +19,8 @@ abstract class Contract {
   protected contractInterface!: ethers.Interface;
   private transactionRepository: TransactionRepositoryInterface;
 
-  constructor(transactionRepository?: TransactionRepositoryInterface) {
+  constructor() {
+    const transactionRepository = ConfigFacade.getConfig()?.txRepository;
     this.transactionRepository =
       transactionRepository ?? new FileTransactionRepository();
   }
@@ -99,4 +101,4 @@ abstract class Contract {
   ): Promise<void>;
 }
 
-export default Contract;
+export default IndexerContract;

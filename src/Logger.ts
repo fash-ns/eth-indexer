@@ -1,5 +1,6 @@
 import winston from "winston";
 import { format } from "logform";
+import ConfigFacade from "./ConfigFacade";
 
 class Logger {
   private constructor() {}
@@ -18,7 +19,7 @@ class Logger {
       transports: [
         new winston.transports.Console(),
         new winston.transports.File({
-          filename: process.env.LOG_FILE_PATH ?? "logs.log",
+          filename: ConfigFacade.getConfig()?.logFilePath,
         }),
       ],
     });

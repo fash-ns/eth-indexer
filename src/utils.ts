@@ -1,8 +1,9 @@
 import BlockIterator from "./BlockIterator";
-import type Contract from "./Contract";
+import ConfigFacade from "./ConfigFacade";
+import type IndexerContract from "./IndexerContract";
 import type {
   ContractConstructor,
-  TransactionRepositoryInterface,
+  IndexerConfig,
 } from "./interfaces";
 
 export const sleep = async (ms: number) => {
@@ -11,16 +12,19 @@ export const sleep = async (ms: number) => {
 
 export const initiate = (
   classes: ContractConstructor[],
-  txRepository?: TransactionRepositoryInterface,
+  config: IndexerConfig,
 ) => {
-  const classInstances: Set<Contract> = new Set<Contract>();
+  const classInstances: Set<IndexerContract> = new Set<IndexerContract>();
+
+  ConfigFacade.getInstance();
+  ConfigFacade.setConfig(config);
 
   classes.forEach((ContractClass) => {
-    const instance = new ContractClass(txRepository);
+    const instance = new ContractClass();
     instance.init();
     classInstances.add(instance);
   });
 
-  const blockIterator = new BlockIterator(classInstances);
+  const blockIterator = new BlockIterator(classInstances, config.lastBlock);
   blockIterator.fetchEvents();
 };

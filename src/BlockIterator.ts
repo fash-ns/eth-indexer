@@ -1,17 +1,18 @@
 import JsonRPCProvider from "./JsonRPCProvider";
 import { JsonRpcProvider as EthersJsonRpcProvider } from "ethers";
 import * as fs from "fs";
-import Contract from "./Contract";
+import IndexerContract from "./IndexerContract";
 import winston from "winston";
 import Logger from "./Logger";
+import ConfigFacade from "./ConfigFacade";
 
 class BlockIterator {
-  private readonly instances: Set<Contract>;
+  private readonly instances: Set<IndexerContract>;
   private readonly rpcProvider: EthersJsonRpcProvider;
   private readonly logger: winston.Logger;
   private readonly lastBlock?: number;
 
-  constructor(instances: Set<Contract>, lastBlock?: number) {
+  constructor(instances: Set<IndexerContract>, lastBlock?: number) {
     this.instances = instances;
     this.lastBlock = lastBlock;
     this.rpcProvider = JsonRPCProvider.getInstance();
@@ -48,20 +49,20 @@ class BlockIterator {
     this.logger.info(`Last block in blockchain is ${lastBlock}`);
 
     while (fromBlock <= lastBlock) {
-      let toBlock = Math.min(lastBlock, fromBlock + 10000);
+      let toBlock = Math.min(lastBlock, fromBlock + ConfigFacade.getConfig()?.batchSize!);
 
       for (const instance of this.instances) {
         this.logger.info(`Fetching events for ${instance.getName()}`);
         await instance.fetchHistoricalEvents(fromBlock, toBlock);
       }
       fromBlock = toBlock + 1;
-      fs.writeFileSync(".blockNumbers/lastBlockNumber", fromBlock.toString());
+      fs.writeFileSync(".lastBlockNumber", fromBlock.toString());
       this.logger.info(`Updated last fetched block number to ${fromBlock}`);
     }
     if (this.lastBlock) {
       this.logger.info(`Indexer reached manual-set last block number`);
     } else {
-      const refetchInterval = parseInt(process.env.REFETCH_INTERVAL ?? "30000");
+      const refetchInterval = ConfigFacade.getConfig()?.refetchInterval!
       this.logger.info(
         `Indexer is now sync with real-time blockchain data. Waiting ${refetchInterval / 1000} seconds to refetch events`,
       );

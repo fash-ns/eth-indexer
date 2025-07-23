@@ -1,12 +1,13 @@
 import type { TransactionRepositoryInterface } from "./interfaces";
 import type { EventLog, Log } from "ethers";
 import * as fs from "fs";
+import ConfigFacade from "./ConfigFacade";
 
 class FileTransactionRepository implements TransactionRepositoryInterface {
   private filePath: string;
 
   constructor() {
-    this.filePath = process.env.TX_REPOSITORY_FILE_PATH ?? ".transactions.json";
+    this.filePath = ConfigFacade.getConfig()?.txRepositoryFilePath!;
     if (!fs.existsSync(this.filePath)) {
       fs.writeFileSync(this.filePath, JSON.stringify([]));
     }

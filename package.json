@@ -10,6 +10,7 @@
     "blockchain",
     "events"
   ],
+  "type": "commonjs",
   "description": "An Ethereum indexer for monitoring and processing blockchain events. Works on all EVM chains.",
   "main": "index.js",
   "author": {
