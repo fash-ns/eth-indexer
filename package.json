@@ -1,0 +1,38 @@
+{
+  "name": "eth-indexer",
+  "version": "1.0.0",
+  "keywords": [
+    "ethereum",
+    "polygon",
+    "bsc",
+    "evm",
+    "indexer",
+    "blockchain",
+    "events"
+  ],
+  "description": "An Ethereum indexer for monitoring and processing blockchain events. Works on all EVM chains.",
+  "main": "index.js",
+  "author": {
+    "name": "Farbod Shams",
+    "email": "farbodshams.2000@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fash-ns/eth-indexer.git"
+  },
+  "types": "index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "ethers": "^6.15.0",
+    "winston": "^3.17.0"
+  }
+}
