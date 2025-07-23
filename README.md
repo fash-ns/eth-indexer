@@ -174,4 +174,4 @@ You can also use any part of `ethers.js` by importing directly from `eth-indexer
 
 ## 📬 Contributing & Questions
 
-Have a question, bug report, or feature request? Feel free to [open an issue](https://github.com/your-repo-link/issues) — contributions are welcome!
+Have a question, bug report, or feature request? Feel free to [open an issue](https://github.com/fash-ns/eth-indexer/issues) — contributions are welcome!
