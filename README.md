@@ -54,7 +54,7 @@ class MarketContract extends IndexerContract {
 
   public async handleEvent(
     parsedEvent: ethers.LogDescription | null,
-    event: ethers.EventLog | ethers.Log,
+    event: ethers.EventLog | ethers.Log
   ): Promise<void> {
     // Your custom event handler logic. E.g: Save the event details
     console.log(`Fetched ${parsedEvent.name}: ${parsedEvent?.args?.order_id}`);
@@ -62,14 +62,14 @@ class MarketContract extends IndexerContract {
 }
 ```
 
-### 2. Start Indexing
+### 2. Initiate the indexer
 
 Call the `initiate()` function with your contract classes and config:
 
 ```ts
 import { initiate } from "argus-indexer";
 
-initiate([NFTContract, MarketContract], {
+initiate({
   rpcUrl: "https://your-rpc-url",
   logFilePath: "logs.log",
   eventHandlerSleep: 200,
@@ -77,8 +77,26 @@ initiate([NFTContract, MarketContract], {
   batchSize: 10000,
   txRepositoryFilePath: "transactions.json",
   lastBlock: 72000000,
-  txRepository: new TransactionRepository(),
 });
+```
+
+### 3. Start indexing
+
+```ts
+import { initiate, index } from "argus-indexer";
+import CustomTransactionRepository from "CustomTransactionRepository";
+
+initiate({
+  rpcUrl: "https://your-rpc-url",
+  logFilePath: "logs.log",
+  eventHandlerSleep: 200,
+  refetchInterval: 30000,
+  batchSize: 10000,
+  txRepositoryFilePath: "transactions.json",
+  lastBlock: 72000000,
+});
+
+index([NFTContract, MarketContract], new CustomTransactionRepository());
 ```
 
 ---
@@ -94,7 +112,6 @@ initiate([NFTContract, MarketContract], {
 | `batchSize`            | ❌       | Block range per fetch. Adjust to avoid RPC limits. Default: `10000`          |
 | `txRepositoryFilePath` | ❌       | File path for storing handled events. Default: `./.transactions.json`        |
 | `lastBlock`            | ❌       | Stop indexing at this block. Useful for snapshots.                           |
-| `txRepository`         | ❌       | Custom handler to manage processed events (see below)                        |
 
 ---
 
@@ -116,7 +133,7 @@ class TransactionRepository implements TransactionRepositoryInterface {
 
   public async submit(
     event: ethers.EventLog | ethers.Log,
-    name: string | null,
+    name: string | null
   ) {
     await this.prisma.transaction.create({
       data: {
@@ -134,7 +151,7 @@ class TransactionRepository implements TransactionRepositoryInterface {
 
   public async existed(
     event: ethers.EventLog | ethers.Log,
-    name: string | null,
+    name: string | null
   ) {
     const existedTx = await this.prisma.transaction.findFirst({
       where: {

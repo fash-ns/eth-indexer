@@ -22,6 +22,9 @@ export const initiate = (
     classInstances.add(instance);
   });
 
-  const blockIterator = new BlockIterator(classInstances, config.lastBlock);
+  const blockIterator = new BlockIterator(
+    classInstances,
+    ConfigFacade.getConfig()?.lastBlock,
+  );
   blockIterator.fetchEvents();
 };

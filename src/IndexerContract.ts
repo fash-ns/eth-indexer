@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import JsonRPCProvider from "./JsonRPCProvider";
+import JsonRPCProvider from "./IndexerJsonRPCProvider";
 import Logger from "./Logger";
 import { sleep } from "./utils";
 import type {
@@ -89,7 +89,9 @@ abstract class IndexerContract {
         continue;
       }
       await this.handleEvent(parsedEvent, event);
-      await sleep(200);
+      if (ConfigFacade.getConfig()?.eventHandlerSleep) {
+        await sleep(ConfigFacade.getConfig()?.eventHandlerSleep!);
+      }
       await this.transactionRepository.submit(
         event,
         parsedEvent?.name ?? "unknown event",

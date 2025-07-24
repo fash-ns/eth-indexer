@@ -1,4 +1,4 @@
-import JsonRPCProvider from "./JsonRPCProvider";
+import JsonRPCProvider from "./IndexerJsonRPCProvider";
 import { JsonRpcProvider as EthersJsonRpcProvider } from "ethers";
 import * as fs from "fs";
 import IndexerContract from "./IndexerContract";
@@ -21,8 +21,8 @@ class BlockIterator {
   }
 
   public async fetchEvents() {
-    const lastFetchedBlockNumber = fs.existsSync(".lastBlockNumber")
-      ? parseInt(fs.readFileSync(".lastBlockNumber").toString())
+    const lastFetchedBlockNumber = fs.existsSync(ConfigFacade.getConfig()?.lastBlockNumberFilePath!)
+      ? parseInt(fs.readFileSync(ConfigFacade.getConfig()?.lastBlockNumberFilePath!).toString())
       : null;
     let minBlockNumber = Number.MAX_SAFE_INTEGER;
 
@@ -59,7 +59,7 @@ class BlockIterator {
         await instance.fetchHistoricalEvents(fromBlock, toBlock);
       }
       fromBlock = toBlock + 1;
-      fs.writeFileSync(".lastBlockNumber", fromBlock.toString());
+      fs.writeFileSync(ConfigFacade.getConfig()?.lastBlockNumberFilePath!, fromBlock.toString());
       this.logger.info(`Updated last fetched block number to ${fromBlock}`);
     }
     if (this.lastBlock) {

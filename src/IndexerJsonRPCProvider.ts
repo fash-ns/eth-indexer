@@ -1,16 +1,16 @@
 import { JsonRpcProvider } from "ethers";
 import ConfigFacade from "./ConfigFacade";
 
-class JsonRPCProvider {
+class IndexerJsonRPCProvider {
   public static provider: JsonRpcProvider;
 
   public static getInstance() {
-    if (!JsonRPCProvider.provider)
-      JsonRPCProvider.provider = new JsonRpcProvider(
+    if (!IndexerJsonRPCProvider.provider)
+      IndexerJsonRPCProvider.provider = new JsonRpcProvider(
         ConfigFacade.getConfig()?.rpcUrl,
       );
-    return JsonRPCProvider.provider;
+    return IndexerJsonRPCProvider.provider;
   }
 }
 
-export default JsonRPCProvider;
+export default IndexerJsonRPCProvider;
